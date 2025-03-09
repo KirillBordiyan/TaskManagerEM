@@ -6,6 +6,7 @@ import effective_mobile.tsm.model.dto.update.CommentUpdateInput;
 import effective_mobile.tsm.model.entity.task.Comment;
 import effective_mobile.tsm.security.body.JwtDecode;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -14,5 +15,6 @@ public interface CommentService {
     CommentResponse getCommentById(UUID commentId);
     CommentResponse createComment(UUID userId, CommentCreateInput dto);
     CommentResponse updateComment(UUID commentId, CommentUpdateInput updatedComment, JwtDecode decode);
-    void deleteComment(UUID commentId, JwtDecode decode);
+    List<CommentResponse> getCommentsByTaskId(UUID taskId);
+    void deleteComment(UUID commentId, UUID userId);
 }

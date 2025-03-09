@@ -1,11 +1,10 @@
 package effective_mobile.tsm.service.impl;
 
-import effective_mobile.tsm.model.dto.input.UserCreateInput;
 import effective_mobile.tsm.model.dto.response.TaskResponse;
 import effective_mobile.tsm.model.dto.response.UserResponse;
 import effective_mobile.tsm.model.dto.update.UserUpdateInput;
 import effective_mobile.tsm.model.entity.user.User;
-import effective_mobile.tsm.security.body.JwtDecode;
+import effective_mobile.tsm.security.body.SignUpRequest;
 import effective_mobile.tsm.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -36,27 +35,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse createUser(UserCreateInput input) {
+    public UserResponse createUser(SignUpRequest input) {
         return null;
     }
 
     @Override
-    public UserResponse updateUserData(UUID userId, UserUpdateInput updatedData, JwtDecode decode) {
+    public UserResponse getUserByUsername(String username) {
         return null;
     }
 
     @Override
-    public void deleteUser(UUID userId, JwtDecode decode) {
+    public UserResponse updateUserData(UUID userId, UserUpdateInput updatedData, String jwt) {
+        return null;
+    }
+
+    @Override
+    public void deleteUser(UUID userId, String jwt) {
 
     }
 
     @Override
-    public boolean isPrincipal(UUID taskId, JwtDecode decode) {
+    public boolean isPrincipal(UUID taskId, String jwt) {
         return false;
     }
 
     @Override
-    public boolean isExecutor(UUID taskId, JwtDecode decode) {
+    public boolean isExecutor(UUID taskId, String jwt) {
         return false;
     }
 

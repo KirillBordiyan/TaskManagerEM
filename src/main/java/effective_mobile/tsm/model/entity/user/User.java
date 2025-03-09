@@ -18,7 +18,7 @@ import java.util.UUID;
 @Setter
 public class User implements Serializable {
     private UUID userId;
-    private String name;
+    private String username;
     private String email;
     private String password;
     private List<Task> principalOf;

@@ -3,3 +3,23 @@ server:
 spring:
   application:
     name: task-management-system
+
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      access: 1 #часов
+      refresh: 30 #дней
+
+  datasource:
+    url: jdbc:postgresql://localhost:5522/tasklist?currentSchema=tasklist
+    username: postgres
+    password: pass
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+      data-locations: classpath:data.sql
+
+

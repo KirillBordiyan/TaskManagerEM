@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserResponse {
     private UUID userId;
-    private String name;
+    private String username;
     private String email;
     private List<TaskResponse> principalOf;
     private List<TaskResponse> executorOf;

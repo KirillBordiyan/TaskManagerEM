@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface TaskService {
     //TODO 2 метода на проверку владельца и исполнителя?
     Task getTaskById(UUID taskId);
-    TaskResponse createTask(UUID userId, TaskCreateInput dto);
+    TaskResponse createTask(String username, TaskCreateInput dto, JwtDecode decode);
     TaskResponse getTaskResponseById(UUID taskId);
     TaskResponse updateTask(UUID taskId, TaskUpdateInput updatedData, JwtDecode decode);
     void deleteTask(UUID taskId, JwtDecode decode);

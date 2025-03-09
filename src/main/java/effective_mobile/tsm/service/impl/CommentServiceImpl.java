@@ -8,6 +8,7 @@ import effective_mobile.tsm.security.body.JwtDecode;
 import effective_mobile.tsm.service.CommentService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,7 +34,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(UUID commentId, JwtDecode decode) {
+    public List<CommentResponse> getCommentsByTaskId(UUID taskId) {
+        return List.of();
+    }
+
+    @Override
+    public void deleteComment(UUID commentId, UUID userId) {
 
     }
 }

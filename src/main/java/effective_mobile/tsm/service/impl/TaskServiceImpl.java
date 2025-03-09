@@ -20,7 +20,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponse createTask(UUID userId, TaskCreateInput dto) {
+    public TaskResponse createTask(String username, TaskCreateInput dto, JwtDecode decode) {
         return null;
     }
 
