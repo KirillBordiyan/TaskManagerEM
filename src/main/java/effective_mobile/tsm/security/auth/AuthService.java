@@ -6,7 +6,7 @@ import effective_mobile.tsm.security.body.SignUpRequest;
 import effective_mobile.tsm.security.body.JwtResponse;
 
 public interface AuthService {
-    UserResponse login(SignUpRequest login);
+    UserResponse register(SignUpRequest login);
     JwtResponse refresh(String refreshToken);
     JwtResponse signIn(SignInRequest login);
 }

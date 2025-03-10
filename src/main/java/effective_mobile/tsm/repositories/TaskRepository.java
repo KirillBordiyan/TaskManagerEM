@@ -11,7 +11,8 @@ import java.util.UUID;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, UUID> {
     Optional<Task> findTaskById(UUID taskId);
-    List<Task> findAllByUserId(UUID userId);
+    List<Task> findAllByUserIdPrincipal(UUID userId);
+    List<Task> findAllByUserIdExecutor(UUID userId);
     //TODO связывание через set поля запросом к бд
     void assignToUserById(UUID taskId, UUID userId);
 }

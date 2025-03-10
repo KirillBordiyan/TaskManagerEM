@@ -10,6 +10,7 @@ import effective_mobile.tsm.service.CommentService;
 import effective_mobile.tsm.service.TaskService;
 import effective_mobile.tsm.util.mappers.TaskMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class TaskController {
     private final JwtService jwtService;
 
     @GetMapping("/{taskId}")
+    @Transactional(readOnly = true)
     public TaskResponse getById(@PathVariable UUID taskId) {
         return taskService.getTaskResponseById(taskId);
     }
@@ -38,6 +40,7 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}/comments")
+    @Transactional(readOnly = true)
     public List<CommentResponse> getComments(@PathVariable UUID taskId) {
         return commentService.getCommentsByTaskId(taskId);
     }

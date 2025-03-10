@@ -14,14 +14,16 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
+    //register
     @PostMapping("/signup")
     public UserResponse signUp(@RequestBody SignUpRequest loginData) {
-        return authService.login(loginData);
+        return authService.register(loginData);
     }
 
+    //login
     @PostMapping("/signin")
-    public JwtResponse signIn(@RequestBody SignInRequest request) {
-        return authService.signIn(request);
+    public JwtResponse signIn(@RequestBody SignInRequest signInRequest) {
+        return authService.signIn(signInRequest);
     }
 
     //TODO изменить логику refresh и signIn, ибо я не возвращаю данные для повторного запроса нужные в методе (пароль)

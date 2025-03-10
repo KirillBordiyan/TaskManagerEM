@@ -7,6 +7,7 @@ import effective_mobile.tsm.security.body.JwtDecode;
 import effective_mobile.tsm.service.TaskService;
 import effective_mobile.tsm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;

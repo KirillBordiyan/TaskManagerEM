@@ -10,7 +10,8 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findUserById(UUID userId);
-    Optional<User> findByUsername(String email);
+    Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
     boolean isPrincipal(UUID userId, UUID taskId);
     boolean isExecutor(UUID userId, UUID taskId);
 }

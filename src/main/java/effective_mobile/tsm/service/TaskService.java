@@ -16,6 +16,6 @@ public interface TaskService {
     TaskResponse createTask(String username, TaskCreateInput dto, JwtDecode decode);
     TaskResponse getTaskResponseById(UUID taskId);
     TaskResponse updateTask(UUID taskId, TaskUpdateInput updatedData, JwtDecode decode);
-    void deleteTask(UUID taskId, JwtDecode decode);
+    void deleteTask(UUID taskId, String jwt);
     List<CommentResponse> getAllComments(UUID taskId);
 }

@@ -5,8 +5,10 @@ import effective_mobile.tsm.model.dto.response.CommentResponse;
 import effective_mobile.tsm.model.dto.response.TaskResponse;
 import effective_mobile.tsm.model.dto.update.TaskUpdateInput;
 import effective_mobile.tsm.model.entity.task.Task;
+import effective_mobile.tsm.repositories.TaskRepository;
 import effective_mobile.tsm.security.body.JwtDecode;
 import effective_mobile.tsm.service.TaskService;
+import effective_mobile.tsm.util.mappers.TaskMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +16,14 @@ import java.util.UUID;
 
 @Service
 public class TaskServiceImpl implements TaskService {
+
+    private final TaskRepository taskRepository;
+    private final TaskMapper taskMapper;
+    private final
+
     @Override
     public Task getTaskById(UUID taskId) {
+
         return null;
     }
 
@@ -35,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(UUID taskId, JwtDecode decode) {
+    public void deleteTask(UUID taskId, String jwt) {
 
     }
 

@@ -38,9 +38,9 @@ public class JwtService {
 
     public String generateAccessToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("authorities", List.of(user.getRole()));
         claims.put("email", user.getEmail());
         claims.put("username", user.getUsername());
+        claims.put("authorities", List.of(user.getRole()));
 
         Instant val = Instant.now()
                 .plus(properties.getAccess(), ChronoUnit.HOURS);
@@ -55,8 +55,8 @@ public class JwtService {
 
     public String generateRefreshTokenToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("username", user.getEmail());
         claims.put("email", user.getEmail());
+        claims.put("username", user.getEmail());
 
         Instant val = Instant.now()
                 .plus(properties.getRefresh(), ChronoUnit.DAYS);

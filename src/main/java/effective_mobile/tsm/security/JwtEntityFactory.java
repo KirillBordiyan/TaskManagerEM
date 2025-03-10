@@ -25,6 +25,7 @@ public class JwtEntityFactory {
         ArrayList<SimpleGrantedAuthority> objects = new ArrayList<>();
         return Stream.of(roles)
                 .map(Object::toString)
-                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 }
