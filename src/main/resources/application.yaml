@@ -5,20 +5,22 @@ spring:
     name: task-management-system
 
   datasource:
-    url: jdbc:postgresql://localhost:5522/tasklist?currentSchema=tasklist
+    url: jdbc:postgresql://localhost:5522/tasklist_db?currentSchema=tasklist
     username: postgres
     password: pass
     driver-class-name: org.postgresql.Driver
 
-  sql:
-    init:
-      mode: always
-      continue-on-error: false
-      data-locations: classpath:data.sql
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    # по-хорошему, вместо пересоздания БД должны быть сиды для инициализации
+    database: POSTGRESQL
 
 security:
   jwt:
-    secret: 13BbPvr3snj1VXXvgRrmRPOIitYykHKUA
+    secret: PEOPWETPOEKLSDVMSKPEOPWETPOEKLSDVMSKPEOPWETPOEKLSDVMSKOEKLSDVMSKPEOPWETPOEKLSDVMSKOEKLSDVMSKPEOPWETPOEKLSDVMSKOEKLSDVMSKPEOPWETPOEKLSDVMSK
     access: 1 #часов
     refresh: 30 #дней
 

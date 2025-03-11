@@ -112,8 +112,8 @@ public class JwtService {
 
 
     public Authentication getAuthentication(String jwt) {
-        String userId = extractUserId(jwt).toString();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+        String email = extractUserEmail(jwt);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }

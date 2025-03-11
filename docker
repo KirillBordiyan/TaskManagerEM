@@ -1,0 +1,10 @@
+запуск
+docker run --name tasklistdb -p 5522:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=tasklist_db -d postgres
+
+вход cli
+psql -U postgres tasklist_db
+
+настройка
+create schema tasklist;
+set search_path = tasklist;
+

@@ -1,6 +1,5 @@
 package effective_mobile.tsm.service.impl;
 
-import effective_mobile.tsm.exceptions.model.AccessDeniedException;
 import effective_mobile.tsm.exceptions.model.RequestedResourceNotFound;
 import effective_mobile.tsm.model.dto.response.TaskResponse;
 import effective_mobile.tsm.model.dto.response.UserResponse;
@@ -9,16 +8,14 @@ import effective_mobile.tsm.model.entity.user.Role;
 import effective_mobile.tsm.model.entity.user.User;
 import effective_mobile.tsm.repositories.TaskRepository;
 import effective_mobile.tsm.repositories.UserRepository;
-import effective_mobile.tsm.security.JwtService;
 import effective_mobile.tsm.security.body.SignUpRequest;
 import effective_mobile.tsm.service.UserService;
 import effective_mobile.tsm.util.mappers.TaskMapper;
 import effective_mobile.tsm.util.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,37 +34,43 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
 
     @Override
+    @Transactional(readOnly = true)
     public User getEntityById(UUID userId) {
-        return userRepository.findUserById(userId)
+        return userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new RequestedResourceNotFound("User not found (by id)"));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getEntityByEmail(String email) {
-        return userRepository.findByEmail(email)
+        return userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RequestedResourceNotFound("User not found (by email)"));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getEntityByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new RequestedResourceNotFound("User not found (by username)"));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponse getUserById(UUID userId) {
         return userMapper.mappingUserEntityToResponse(
-                userRepository.findUserById(userId)
+                userRepository.findUserByUserId(userId)
                         .orElseThrow(() -> new RequestedResourceNotFound("User response not found (by id)"))
         );
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponse getUserById(String userId) {
         return getUserById(UUID.fromString(userId));
     }
 
     @Override
+    @Transactional
     public UserResponse createUser(SignUpRequest input) {
 
         if (Objects.isNull(input.getEmail())) {
@@ -94,16 +97,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponse getUserByUsername(String username) {
         return userMapper.mappingUserEntityToResponse(
-                userRepository.findByUsername(username)
+                userRepository.findUserByUsername(username)
                         .orElseThrow(() -> new RequestedResourceNotFound("User response not found (by username)")));
     }
 
     @Override
+    @Transactional
     public UserResponse updateUserData(UUID userId, UserUpdateInput updatedData) {
 
-        User user = userRepository.findUserById(userId)
+        User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new RequestedResourceNotFound("User not found in update"));
 
         if(updatedData.getUpdatedEmail() != null){
@@ -118,21 +123,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(UUID userId) {
         userRepository.deleteById(userId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isPrincipal(UUID userId, UUID taskId) {
         return userRepository.isPrincipal(userId, taskId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isExecutor(UUID userId, UUID taskId) {
         return userRepository.isExecutor(userId, taskId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskResponse> getAllTasksLikeExecutor(UUID userId) {
 
         return taskRepository.findAllByUserIdExecutor(userId)
@@ -142,6 +151,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskResponse> getAllTasksLikePrincipal(UUID userId) {
         return taskRepository.findAllByUserIdPrincipal(userId)
                 .stream().map(taskMapper::mappingTaskEntityToResponse)

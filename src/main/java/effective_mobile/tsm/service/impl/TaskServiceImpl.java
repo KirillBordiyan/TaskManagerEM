@@ -13,6 +13,7 @@ import effective_mobile.tsm.service.UserService;
 import effective_mobile.tsm.util.mappers.TaskMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,28 +31,35 @@ public class TaskServiceImpl implements TaskService {
     private final CommentService commentService;
 
     @Override
+    @Transactional(readOnly = true)
     public Task getTaskById(UUID taskId) {
         return taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new RequestedResourceNotFound("Task not found (by id)"));
     }
 
     @Override
+    @Transactional
     public TaskResponse createTask(String username, TaskCreateInput dto) {
         Task task = taskMapper.mappingTaskInputToEntity(dto);
         task.setComments(new ArrayList<>());
-        task.setCreatedAt(LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))));
+        task.setCreatedAt(LocalDateTime.parse(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
+                DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+        //FIXME не связываются сущности создателя и исполнителя в связанные таблички бд
         task.setPrincipal(userService.getEntityByUsername(username));
         task.setExecutor(userService.getEntityById(dto.getExecutorId()));
         return taskMapper.mappingTaskEntityToResponse(taskRepository.save(task));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TaskResponse getTaskResponseById(UUID taskId) {
         return taskMapper.mappingTaskEntityToResponse(taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new RequestedResourceNotFound("Task response not found (by id)")));
     }
 
     @Override
+    @Transactional
     public TaskResponse updateTask(UUID taskId, TaskUpdateInput updatedData) {
         Task task = taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new RequestedResourceNotFound("Task not found (in update)"));
@@ -74,11 +82,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void deleteTask(UUID taskId) {
         taskRepository.deleteById(taskId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentResponse> getAllComments(UUID taskId) {
         return commentService.getCommentsByTaskId(taskId);
     }

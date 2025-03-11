@@ -8,6 +8,7 @@ import effective_mobile.tsm.security.JwtService;
 import effective_mobile.tsm.service.TaskService;
 import effective_mobile.tsm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,15 +21,20 @@ public class UserTaskController {
 
     private final TaskService taskService;
     private final UserService userService;
-    private final JwtService jwtService;
 
-    @GetMapping
+    @GetMapping("/principal")
     public List<TaskResponse> getTasksByUserPrincipal(@PathVariable String username) {
         UserResponse userByUsername = userService.getUserByUsername(username);
         return userByUsername.getPrincipalOf();
     }
 
-    //TODO вопрос, что передавать
+    @GetMapping("/executor")
+    public List<TaskResponse> getTasksByUserExecutor(@PathVariable String username) {
+        UserResponse userByUsername = userService.getUserByUsername(username);
+        return userByUsername.getExecutorOf();
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public TaskResponse createTask(@PathVariable String username,
                                    @RequestBody TaskCreateInput taskInput) {

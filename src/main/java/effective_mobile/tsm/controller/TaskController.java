@@ -29,7 +29,6 @@ public class TaskController {
     private final UserService userService;
 
     @GetMapping("/{taskId}")
-    @Transactional(readOnly = true)
     public TaskResponse getById(@PathVariable UUID taskId) {
         return taskService.getTaskResponseById(taskId);
     }
@@ -44,7 +43,6 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}/comments")
-    @Transactional(readOnly = true)
     public List<CommentResponse> getComments(@PathVariable UUID taskId) {
         return commentService.getCommentsByTaskId(taskId);
     }

@@ -7,7 +7,10 @@ import effective_mobile.tsm.security.body.JwtDecode;
 import effective_mobile.tsm.service.TaskService;
 import effective_mobile.tsm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,17 +24,20 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{username}")
     public UserResponse getUserByUsername(@PathVariable String username) {
         return userService.getUserByUsername(username);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
-    public UserResponse getCurrentUser(@RequestHeader("Authorization") String jwtAccess) {
-        UUID userId = jwtService.extractUserId(jwtAccess);
+    public UserResponse getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        UUID userId = userService.getEntityByEmail(userDetails.getUsername()).getUserId();
         return userService.getUserById(userId);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{userId}")
     public UserResponse updateUserData(@PathVariable UUID userId,
                                        @RequestBody UserUpdateInput updateInput){

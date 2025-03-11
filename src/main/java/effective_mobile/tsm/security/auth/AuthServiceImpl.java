@@ -11,11 +11,12 @@ import effective_mobile.tsm.util.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager manager;
     private final UserService userService;
@@ -25,11 +26,14 @@ public class AuthServiceImpl implements AuthService{
     public JwtResponse signIn(SignInRequest login) {
         JwtResponse response = new JwtResponse();
         manager.authenticate(new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
+
         User user = userService.getEntityByEmail(login.getEmail());
+
         response.setUserId(user.getUserId());
         response.setEmail(user.getEmail());
         response.setAccess(jwtService.generateAccessToken(user));
         response.setRefresh(jwtService.generateRefreshTokenToken(user));
+
         return response;
     }
 
