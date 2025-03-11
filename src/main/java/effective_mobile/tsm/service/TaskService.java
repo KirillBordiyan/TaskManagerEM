@@ -13,9 +13,9 @@ import java.util.UUID;
 public interface TaskService {
     //TODO 2 метода на проверку владельца и исполнителя?
     Task getTaskById(UUID taskId);
-    TaskResponse createTask(String username, TaskCreateInput dto, JwtDecode decode);
+    TaskResponse createTask(String username, TaskCreateInput dto);
     TaskResponse getTaskResponseById(UUID taskId);
-    TaskResponse updateTask(UUID taskId, TaskUpdateInput updatedData, JwtDecode decode);
-    void deleteTask(UUID taskId, String jwt);
+    TaskResponse updateTask(UUID taskId, TaskUpdateInput updatedData);
+    void deleteTask(UUID taskId);
     List<CommentResponse> getAllComments(UUID taskId);
 }

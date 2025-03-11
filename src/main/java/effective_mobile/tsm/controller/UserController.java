@@ -7,6 +7,7 @@ import effective_mobile.tsm.security.body.JwtDecode;
 import effective_mobile.tsm.service.TaskService;
 import effective_mobile.tsm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +34,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public UserResponse updateUserData(@PathVariable UUID userId,
-                                       @RequestBody UserUpdateInput updateInput,
-                                       @RequestHeader("Authorization") String jwtAccess){
-        return userService.updateUserData(userId, updateInput, jwtAccess);
+                                       @RequestBody UserUpdateInput updateInput){
+        return userService.updateUserData(userId, updateInput);
     }
 }

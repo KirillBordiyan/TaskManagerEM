@@ -8,8 +8,11 @@ import effective_mobile.tsm.security.JwtService;
 import effective_mobile.tsm.security.body.JwtDecode;
 import effective_mobile.tsm.service.CommentService;
 import effective_mobile.tsm.service.TaskService;
+import effective_mobile.tsm.service.UserService;
 import effective_mobile.tsm.util.mappers.TaskMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +26,7 @@ public class TaskController {
 
     private final TaskService taskService;
     private final CommentService commentService;
-    private final JwtService jwtService;
+    private final UserService userService;
 
     @GetMapping("/{taskId}")
     @Transactional(readOnly = true)
@@ -34,9 +37,10 @@ public class TaskController {
     @PostMapping("/{taskId}/comments")
     public CommentResponse createComment(@PathVariable UUID taskId,
                                          @RequestBody CommentCreateInput commentInput,
-                                         @RequestHeader("Authorization") String jwtAccess) {
-        UUID uuid = jwtService.extractUserId(jwtAccess);
-        return commentService.createComment(uuid, commentInput);
+                                         @AuthenticationPrincipal UserDetails userDetails) {
+        return commentService.createComment(
+                userService.getEntityByEmail(userDetails.getUsername()).getUserId(),
+                commentInput);
     }
 
     @GetMapping("/{taskId}/comments")
@@ -47,9 +51,7 @@ public class TaskController {
 
     @DeleteMapping("/{taskId}/comments/{commentId}")
     public void deleteComment(@PathVariable UUID taskId,
-                              @PathVariable UUID commentId,
-                              @RequestHeader("Authorization") String jwtAccess) {
-        UUID uuid = jwtService.extractUserId(jwtAccess);
-        commentService.deleteComment(commentId, uuid);
+                              @PathVariable UUID commentId) {
+        commentService.deleteComment(commentId);
     }
 }

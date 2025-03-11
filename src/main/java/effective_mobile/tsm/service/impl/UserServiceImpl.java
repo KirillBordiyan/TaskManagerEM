@@ -15,6 +15,8 @@ import effective_mobile.tsm.service.UserService;
 import effective_mobile.tsm.util.mappers.TaskMapper;
 import effective_mobile.tsm.util.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final TaskMapper taskMapper;
     private final PasswordEncoder encoder;
-    private final JwtService jwtService;
 
     @Override
     public User getEntityById(UUID userId) {
@@ -45,6 +46,12 @@ public class UserServiceImpl implements UserService {
     public User getEntityByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RequestedResourceNotFound("User not found (by email)"));
+    }
+
+    @Override
+    public User getEntityByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RequestedResourceNotFound("User not found (by username)"));
     }
 
     @Override
@@ -94,10 +101,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUserData(UUID userId, UserUpdateInput updatedData, String jwt) {
-        if (!jwtService.isTokenValid(jwt)) {
-            throw new RuntimeException("Invalid token");
-        }
+    public UserResponse updateUserData(UUID userId, UserUpdateInput updatedData) {
+
         User user = userRepository.findUserById(userId)
                 .orElseThrow(() -> new RequestedResourceNotFound("User not found in update"));
 
@@ -113,28 +118,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(UUID userId, String jwt) {
-        if (!jwtService.isTokenValid(jwt)) {
-            throw new RuntimeException("Invalid token");
-        }
+    public void deleteUser(UUID userId) {
         userRepository.deleteById(userId);
     }
 
     @Override
-    public boolean isPrincipal(UUID taskId, String jwt) {
-        if (!jwtService.isTokenValid(jwt)) {
-            throw new RuntimeException("Invalid token");
-        }
-        UUID userId = jwtService.extractUserId(jwt);
+    public boolean isPrincipal(UUID userId, UUID taskId) {
         return userRepository.isPrincipal(userId, taskId);
     }
 
     @Override
-    public boolean isExecutor(UUID taskId, String jwt) {
-        if (!jwtService.isTokenValid(jwt)) {
-            throw new RuntimeException("Invalid token");
-        }
-        UUID userId = jwtService.extractUserId(jwt);
+    public boolean isExecutor(UUID userId, UUID taskId) {
         return userRepository.isExecutor(userId, taskId);
     }
 
