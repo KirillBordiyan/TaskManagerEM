@@ -22,7 +22,6 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final JwtService jwtService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{username}")
@@ -42,5 +41,11 @@ public class UserController {
     public UserResponse updateUserData(@PathVariable UUID userId,
                                        @RequestBody UserUpdateInput updateInput){
         return userService.updateUserData(userId, updateInput);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable UUID userId){
+        userService.deleteUser(userId);
     }
 }

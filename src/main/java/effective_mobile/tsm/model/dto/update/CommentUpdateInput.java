@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentUpdateInput {
-    private String commentContent;
+    private String updatedCommentContent;
 }

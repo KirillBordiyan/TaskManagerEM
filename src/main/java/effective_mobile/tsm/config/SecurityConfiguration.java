@@ -45,12 +45,12 @@ public class SecurityConfiguration {
                     request.requestMatchers("/tasks/**").authenticated();
                     request.requestMatchers("/users/**").authenticated();
                 })
-                .exceptionHandling(handling ->{
-                    handling.accessDeniedHandler(((request, response, accessDeniedException) -> {
-                        response.setStatus(HttpStatus.FORBIDDEN.value());
-                        response.getWriter().write("FORBIDDEN -> unauthorize");
-                    }));
-                })
+//                .exceptionHandling(handling ->{
+//                    handling.accessDeniedHandler(((request, response, accessDeniedException) -> {
+//                        response.setStatus(HttpStatus.FORBIDDEN.value());
+//                        response.getWriter().write("FORBIDDEN -> unauthorize");
+//                    }));
+//                })
                 .anonymous(AbstractHttpConfigurer::disable)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();

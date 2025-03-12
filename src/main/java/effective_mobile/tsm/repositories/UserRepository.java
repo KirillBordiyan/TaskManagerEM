@@ -11,37 +11,10 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-//    @Query(
-//            nativeQuery = true,
-//            value = """
-//                    SELECT u.user_id, u.username, u.email,u.password, up.task_id, ue.task_id ,u.role
-//                    FROM users u
-//                    LEFT JOIN user_executor_of ue on u.user_id = ue.user_id
-//                    INNER JOIN user_principal_of up on u.user_id = up.user_id
-//                    WHERE u.user_id = :userId be910e74-96b5-4fbf-8342-1585e2f9ff67
-//                    """)
     Optional<User> findUserByUserId(UUID userId);
 
-//    @Query(
-//            nativeQuery = true,
-//            value = """
-//                    SELECT u.user_id, u.username, u.email,u.password, up.task_id, ue.task_id ,u.role
-//                    FROM users u
-//                    LEFT JOIN user_executor_of ue on u.user_id = ue.user_id
-//                    INNER JOIN user_principal_of up on u.user_id = up.user_id
-//                    WHERE u.username = :username
-//                    """)
     Optional<User> findUserByUsername(String username);
 
-//    @Query(
-//            nativeQuery = true,
-//            value = """
-//                    SELECT u.user_id, u.username, u.email,u.password, up.task_id, ue.task_id ,u.role
-//                    FROM users u
-//                    LEFT JOIN user_executor_of ue on u.user_id = ue.user_id
-//                    INNER JOIN user_principal_of up on u.user_id = up.user_id
-//                    WHERE u.email = :email
-//                    """)
     Optional<User> findUserByEmail(String email);
 
     @Query(

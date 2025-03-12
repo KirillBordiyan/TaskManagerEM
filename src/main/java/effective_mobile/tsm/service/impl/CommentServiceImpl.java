@@ -19,20 +19,21 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @__(@Lazy))
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentRepository commentRepository;
     private final TaskService taskService;
     private final UserService userService;
+    private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
 
     @Override
     @Transactional(readOnly = true)
     public Comment getComment(UUID commentId) {
-        return commentRepository.findCommentById(commentId)
+        return commentRepository.findByCommentId(commentId)
                 .orElseThrow(() -> new RequestedResourceNotFound("Comment not found (by id)"));
     }
 
@@ -44,21 +45,23 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentResponse createComment(UUID userId, CommentCreateInput dto) {
+    public CommentResponse createComment(UUID userId, UUID taskId, CommentCreateInput dto) {
         Comment comment = commentMapper.mappingCommentInputToEntity(dto);
-        comment.setCreatedAt(LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))));
+        comment.setCreatedAt(LocalDateTime.parse(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
+                DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
         comment.setCommentOwner(userService.getEntityById(userId));
-        comment.setTask(taskService.getTaskById(dto.getTaskId()));
+        comment.setTask(taskService.getTaskById(taskId));
         return commentMapper.mappingCommentEntityToResponse(commentRepository.save(comment));
     }
 
     @Override
     @Transactional
     public CommentResponse updateComment(UUID commentId, CommentUpdateInput updatedComment) {
-        Comment comment = commentRepository.findCommentById(commentId)
+        Comment comment = commentRepository.findByCommentId(commentId)
                 .orElseThrow(() -> new RequestedResourceNotFound("Comment not found (in update)"));
-        if(updatedComment.getCommentContent() != null){
-            comment.setCommentContent(updatedComment.getCommentContent());
+        if(updatedComment.getUpdatedCommentContent() != null){
+            comment.setCommentContent(updatedComment.getUpdatedCommentContent());
         }
         return commentMapper.mappingCommentEntityToResponse(commentRepository.save(comment));
     }
@@ -73,6 +76,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentResponse> getCommentsByTaskId(UUID taskId) {
-        return List.of();
+        return commentRepository.findAllByTask(taskService.getTaskById(taskId)).stream()
+                .map(commentMapper::mappingCommentEntityToResponse)
+                .collect(Collectors.toList());
     }
 }

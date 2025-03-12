@@ -1,7 +1,6 @@
 package effective_mobile.tsm.service.impl;
 
 import effective_mobile.tsm.exceptions.model.RequestedResourceNotFound;
-import effective_mobile.tsm.model.dto.response.TaskResponse;
 import effective_mobile.tsm.model.dto.response.UserResponse;
 import effective_mobile.tsm.model.dto.update.UserUpdateInput;
 import effective_mobile.tsm.model.entity.user.Role;
@@ -18,10 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -140,21 +137,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.isExecutor(userId, taskId);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<TaskResponse> getAllTasksLikeExecutor(UUID userId) {
-
-        return taskRepository.findAllByUserIdExecutor(userId)
-                .stream()
-                .map(taskMapper::mappingTaskEntityToResponse)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<TaskResponse> getAllTasksLikePrincipal(UUID userId) {
-        return taskRepository.findAllByUserIdPrincipal(userId)
-                .stream().map(taskMapper::mappingTaskEntityToResponse)
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<TaskResponse> getAllTasksLikeExecutor(UUID userId) {
+//
+//        return taskRepository.findAllByUserIdExecutor(userId)
+//                .stream()
+//                .map(taskMapper::mappingTaskEntityToResponse)
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<TaskResponse> getAllTasksLikePrincipal(UUID userId) {
+//        return taskRepository.findAllByUserIdPrincipal(userId)
+//                .stream().map(taskMapper::mappingTaskEntityToResponse)
+//                .collect(Collectors.toList());
+//    }
 }

@@ -6,6 +6,7 @@ import effective_mobile.tsm.model.dto.response.CommentResponse;
 import effective_mobile.tsm.model.dto.response.TaskResponse;
 import effective_mobile.tsm.model.dto.update.TaskUpdateInput;
 import effective_mobile.tsm.model.entity.task.Task;
+import effective_mobile.tsm.model.entity.user.User;
 import effective_mobile.tsm.repositories.TaskRepository;
 import effective_mobile.tsm.service.CommentService;
 import effective_mobile.tsm.service.TaskService;
@@ -33,7 +34,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(readOnly = true)
     public Task getTaskById(UUID taskId) {
-        return taskRepository.findTaskById(taskId)
+        return taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new RequestedResourceNotFound("Task not found (by id)"));
     }
 
@@ -46,28 +47,36 @@ public class TaskServiceImpl implements TaskService {
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
                 DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
         //FIXME не связываются сущности создателя и исполнителя в связанные таблички бд
-        task.setPrincipal(userService.getEntityByUsername(username));
-        task.setExecutor(userService.getEntityById(dto.getExecutorId()));
-        return taskMapper.mappingTaskEntityToResponse(taskRepository.save(task));
+        User principal = userService.getEntityByUsername(username);
+        task.setPrincipal(principal);
+        User executor = userService.getEntityById(dto.getExecutorId());
+        task.setExecutor(executor);
+
+        Task saved = taskRepository.save(task);
+        principal.getPrincipalOf().add(saved);
+        executor.getExecutorOf().add(saved);
+
+
+        return taskMapper.mappingTaskEntityToResponse(saved);
     }
 
     @Override
     @Transactional(readOnly = true)
     public TaskResponse getTaskResponseById(UUID taskId) {
-        return taskMapper.mappingTaskEntityToResponse(taskRepository.findTaskById(taskId)
+        return taskMapper.mappingTaskEntityToResponse(taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new RequestedResourceNotFound("Task response not found (by id)")));
     }
 
     @Override
     @Transactional
     public TaskResponse updateTask(UUID taskId, TaskUpdateInput updatedData) {
-        Task task = taskRepository.findTaskById(taskId)
+        Task task = taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new RequestedResourceNotFound("Task not found (in update)"));
         if (updatedData.getUpdatedDescription() != null) {
             task.setDescription(updatedData.getUpdatedDescription());
         }
         if (updatedData.getUpdatedExecutor() != null) {
-            task.setExecutor(updatedData.getUpdatedExecutor());
+            task.setExecutor(userService.getEntityById(updatedData.getUpdatedExecutor()));
         }
         if (updatedData.getUpdatedTitle() != null) {
             task.setTitle(updatedData.getUpdatedTitle());
@@ -84,6 +93,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void deleteTask(UUID taskId) {
+        taskRepository.deleteTaskExecutorLinks(taskId);
+        taskRepository.deleteTaskPrincipalLinks(taskId);
         taskRepository.deleteById(taskId);
     }
 

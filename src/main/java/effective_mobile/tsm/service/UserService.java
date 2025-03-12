@@ -21,6 +21,6 @@ public interface UserService {
     void deleteUser(UUID userId);
     boolean isPrincipal(UUID userId, UUID taskId);
     boolean isExecutor(UUID userId, UUID taskId);
-    List<TaskResponse> getAllTasksLikeExecutor(UUID userId);
-    List<TaskResponse> getAllTasksLikePrincipal(UUID userId);
+//    List<TaskResponse> getAllTasksLikeExecutor(UUID userId);
+//    List<TaskResponse> getAllTasksLikePrincipal(UUID userId);
 }

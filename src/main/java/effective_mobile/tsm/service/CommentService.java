@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface CommentService {
     Comment getComment(UUID commentId);
     CommentResponse getCommentById(UUID commentId);
-    CommentResponse createComment(UUID userId, CommentCreateInput dto);
+    CommentResponse createComment(UUID userId, UUID taskId, CommentCreateInput dto);
     CommentResponse updateComment(UUID commentId, CommentUpdateInput updatedComment);
     List<CommentResponse> getCommentsByTaskId(UUID taskId);
     void deleteComment(UUID commentId);

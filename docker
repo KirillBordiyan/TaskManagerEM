@@ -8,3 +8,14 @@ psql -U postgres tasklist_db
 create schema tasklist;
 set search_path = tasklist;
 
+
+
+- global ex handler
+- input admins
+- method creating other admins
+- security expressions
+- sql scripts to copy after dc up
+- pagination
+- swagger / ui / open api
+- docker compose
+- unit tests

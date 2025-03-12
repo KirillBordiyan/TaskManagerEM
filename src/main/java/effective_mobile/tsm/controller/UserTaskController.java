@@ -22,18 +22,6 @@ public class UserTaskController {
     private final TaskService taskService;
     private final UserService userService;
 
-    @GetMapping("/principal")
-    public List<TaskResponse> getTasksByUserPrincipal(@PathVariable String username) {
-        UserResponse userByUsername = userService.getUserByUsername(username);
-        return userByUsername.getPrincipalOf();
-    }
-
-    @GetMapping("/executor")
-    public List<TaskResponse> getTasksByUserExecutor(@PathVariable String username) {
-        UserResponse userByUsername = userService.getUserByUsername(username);
-        return userByUsername.getExecutorOf();
-    }
-
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     public TaskResponse createTask(@PathVariable String username,
@@ -41,6 +29,7 @@ public class UserTaskController {
         return taskService.createTask(username, taskInput);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{taskId}")
     public TaskResponse updateTask(@PathVariable String username,
                                    @PathVariable UUID taskId,
@@ -48,6 +37,21 @@ public class UserTaskController {
         return taskService.updateTask(taskId, updateInput);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/principal")
+    public List<TaskResponse> getTasksByUserPrincipal(@PathVariable String username) {
+        UserResponse userByUsername = userService.getUserByUsername(username);
+        return userByUsername.getPrincipalOf();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/executor")
+    public List<TaskResponse> getTasksByUserExecutor(@PathVariable String username) {
+        UserResponse userByUsername = userService.getUserByUsername(username);
+        return userByUsername.getExecutorOf();
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{taskId}")
     public void deleteTask(@PathVariable String username,
                            @PathVariable UUID taskId) {

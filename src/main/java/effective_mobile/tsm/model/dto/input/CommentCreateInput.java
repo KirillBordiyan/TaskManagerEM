@@ -12,6 +12,5 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentCreateInput {
-    private UUID taskId;
     private String commentContent;
 }

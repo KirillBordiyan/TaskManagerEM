@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,5 +19,5 @@ public class TaskUpdateInput {
     private String updatedDescription;
     private TaskStatus updatedStatus;
     private TaskPriority updatedPriority;
-    private User updatedExecutor;
+    private UUID updatedExecutor;
 }

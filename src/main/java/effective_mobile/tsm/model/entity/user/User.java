@@ -1,5 +1,6 @@
 package effective_mobile.tsm.model.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import effective_mobile.tsm.model.entity.task.Task;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"principalOf", "executorOf"})
 public class User implements Serializable {
 
     @Id
