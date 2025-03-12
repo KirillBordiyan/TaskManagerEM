@@ -74,6 +74,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public boolean isCommentOwner(UUID userId, UUID commentId) {
+        return commentRepository.isCommentOwner(userId, commentId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<CommentResponse> getCommentsByTaskId(UUID taskId) {
         return commentRepository.findAllByTask(taskService.getTaskById(taskId)).stream()

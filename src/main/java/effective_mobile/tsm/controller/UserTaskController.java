@@ -2,7 +2,6 @@ package effective_mobile.tsm.controller;
 
 import effective_mobile.tsm.exceptions.ExceptionBody;
 import effective_mobile.tsm.model.dto.input.TaskCreateInput;
-import effective_mobile.tsm.model.dto.response.CommentResponse;
 import effective_mobile.tsm.model.dto.response.TaskResponse;
 import effective_mobile.tsm.model.dto.response.UserResponse;
 import effective_mobile.tsm.model.dto.update.ExecutorTaskUpdateInput;
@@ -17,8 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,11 +45,10 @@ public class UserTaskController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@CSE.isOwnerOrSenderByUsername(#username)")
     @PostMapping
     public TaskResponse createTask(@PathVariable String username,
-                                   @Valid @RequestBody TaskCreateInput taskInput,
-                                   @AuthenticationPrincipal UserDetails details) {
+                                   @Valid @RequestBody TaskCreateInput taskInput) {
         return taskService.createTask(username, taskInput);
     }
 
@@ -67,12 +63,11 @@ public class UserTaskController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@CSE.isOwnerOrSenderByUsername(#username) or @CSE.isAdminOrSudo()")
     @PutMapping("/{taskId}")
     public TaskResponse updateTask(@PathVariable String username,
                                    @PathVariable UUID taskId,
-                                   @Valid @RequestBody TaskUpdateInput updateInput,
-                                   @AuthenticationPrincipal UserDetails details) {
+                                   @Valid @RequestBody TaskUpdateInput updateInput) {
         return taskService.updateTask(taskId, updateInput);
     }
 
@@ -87,11 +82,11 @@ public class UserTaskController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
+    @PreAuthorize("@CSE.isExecutor(#taskId)")
     @PostMapping("/{taskId}")
     public TaskResponse updateStatusOnly(@PathVariable String username,
                                          @PathVariable UUID taskId,
-                                         @Valid @RequestBody ExecutorTaskUpdateInput input,
-                                         @AuthenticationPrincipal UserDetails details) {
+                                         @Valid @RequestBody ExecutorTaskUpdateInput input) {
         return taskService.updateTaskByExecutor(taskId, input);
     }
 
@@ -110,8 +105,7 @@ public class UserTaskController {
     )
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/principal")
-    public List<TaskResponse> getTasksByUserPrincipal(@PathVariable String username,
-                                                      @AuthenticationPrincipal UserDetails details) {
+    public List<TaskResponse> getTasksByUserPrincipal(@PathVariable String username) {
         UserResponse userByUsername = userService.getUserByUsername(username);
         return userByUsername.getPrincipalOf();
     }
@@ -130,8 +124,7 @@ public class UserTaskController {
     )
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/executor")
-    public List<TaskResponse> getTasksByUserExecutor(@PathVariable String username,
-                                                     @AuthenticationPrincipal UserDetails details) {
+    public List<TaskResponse> getTasksByUserExecutor(@PathVariable String username) {
         UserResponse userByUsername = userService.getUserByUsername(username);
         return userByUsername.getExecutorOf();
     }
@@ -147,11 +140,10 @@ public class UserTaskController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@CSE.isOwnerOrSenderByUsername(#username) or @CSE.isAdminOrSudo()")
     @DeleteMapping("/{taskId}")
     public void deleteTask(@PathVariable String username,
-                           @PathVariable UUID taskId,
-                           @AuthenticationPrincipal UserDetails details) {
+                           @PathVariable UUID taskId) {
         taskService.deleteTask(taskId);
     }
 

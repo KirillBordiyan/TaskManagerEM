@@ -1,7 +1,5 @@
 package effective_mobile.tsm.model.dto.response;
 
-import effective_mobile.tsm.model.entity.task.Task;
-import effective_mobile.tsm.model.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

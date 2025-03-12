@@ -64,7 +64,7 @@ public class TaskController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@CSE.isExecutor(#taskId) or @CSE.isPrincipal(#taskId) or @CSE.isAdminOrSudo()")
     @PostMapping("/{taskId}/comments")
     public CommentResponse createComment(@PathVariable UUID taskId,
                                          @Valid @RequestBody CommentCreateInput commentInput,
@@ -107,12 +107,11 @@ public class TaskController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@CSE.isCommentOwner(#commentId)")
     @PutMapping("/{taskId}/{commentId}")
     public CommentResponse updateComment(@PathVariable UUID taskId,
                                          @PathVariable UUID commentId,
-                                         @RequestBody CommentUpdateInput updateInput,
-                                         @AuthenticationPrincipal UserDetails details){
+                                         @RequestBody CommentUpdateInput updateInput){
         return commentService.updateComment(commentId, updateInput);
     }
 
@@ -130,11 +129,10 @@ public class TaskController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@CSE.isTaskOwner(#taskId) or @CSE.isCommentOwner(#commentId) or @CSE.isAdminOrSudo()")
     @DeleteMapping("/{taskId}/comments/{commentId}")
     public void deleteComment(@PathVariable UUID taskId,
-                              @PathVariable UUID commentId,
-                              @AuthenticationPrincipal UserDetails details) {
+                              @PathVariable UUID commentId) {
         commentService.deleteComment(commentId);
     }
 }

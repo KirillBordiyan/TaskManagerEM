@@ -1,6 +1,5 @@
 package effective_mobile.tsm.security.body;
 
-import effective_mobile.tsm.model.entity.user.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;

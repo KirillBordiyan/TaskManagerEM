@@ -79,8 +79,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException(e.getMessage());
         }
 
-        if (Objects.isNull(input.getEmail())) {
-            throw new IllegalStateException("CREATE: user email must be not null");
+        if (Objects.isNull(input.getEmail()) || !isValidEmail(input.getEmail())) {
+            throw new IllegalStateException("CREATE: user email must be valid or not null");
         }
         if (Objects.isNull(input.getUsername())) {
             throw new IllegalStateException("CREATE: username must be not null");
@@ -116,8 +116,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException(e.getMessage());
         }
 
-        if (Objects.isNull(adminData.getEmail())) {
-            throw new IllegalStateException("CREATE ADMIN: user email must be not null");
+        if (Objects.isNull(adminData.getEmail()) || !isValidEmail(adminData.getEmail())) {
+            throw new IllegalStateException("CREATE ADMIN: user email must be valid or not null");
         }
         if (Objects.isNull(adminData.getUsername())) {
             throw new IllegalStateException("CREATE ADMIN: username must be not null");
@@ -182,6 +182,11 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public boolean isExecutor(UUID userId, UUID taskId) {
         return userRepository.isExecutor(userId, taskId);
+    }
+
+    private static boolean isValidEmail(String email) {
+        String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+        return email.matches(regex);
     }
 
 //    @Override

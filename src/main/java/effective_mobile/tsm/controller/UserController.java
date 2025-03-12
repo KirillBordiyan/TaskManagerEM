@@ -1,7 +1,6 @@
 package effective_mobile.tsm.controller;
 
 import effective_mobile.tsm.exceptions.ExceptionBody;
-import effective_mobile.tsm.model.dto.response.CommentResponse;
 import effective_mobile.tsm.model.dto.response.UserResponse;
 import effective_mobile.tsm.model.dto.update.UserUpdateInput;
 import effective_mobile.tsm.service.UserService;
@@ -56,7 +55,7 @@ public class UserController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@CSE.isOwnerOrSenderByUsername(#userDetails.getUsername())")
     @GetMapping("/me")
     public UserResponse getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         UUID userId = userService.getEntityByEmail(userDetails.getUsername()).getUserId();
@@ -75,11 +74,10 @@ public class UserController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@CSE.isOwnerOrSenderById(#userId) or @CSE.isAdminOrSudo()")
     @PutMapping("/{userId}")
     public UserResponse updateUserData(@PathVariable UUID userId,
-                                       @Valid @RequestBody UserUpdateInput updateInput,
-                                       @AuthenticationPrincipal UserDetails details){
+                                       @Valid @RequestBody UserUpdateInput updateInput){
         return userService.updateUserData(userId, updateInput);
     }
 
@@ -94,10 +92,9 @@ public class UserController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@CSE.isAdminOrSudo()")
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable UUID userId,
-                           @AuthenticationPrincipal UserDetails details){
+    public void deleteUser(@PathVariable UUID userId){
         userService.deleteUser(userId);
     }
 }

@@ -15,5 +15,6 @@ public interface CommentService {
     CommentResponse createComment(UUID userId, UUID taskId, CommentCreateInput dto);
     CommentResponse updateComment(UUID commentId, CommentUpdateInput updatedComment);
     List<CommentResponse> getCommentsByTaskId(UUID taskId);
+    boolean isCommentOwner(UUID userId, UUID commentId);
     void deleteComment(UUID commentId);
 }
