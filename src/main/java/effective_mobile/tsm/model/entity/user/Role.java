@@ -6,5 +6,5 @@ import java.io.Serializable;
 
 @Getter
 public enum Role implements Serializable {
-    USER, ADMIN;
+    USER, ADMIN, SUDO;
 }

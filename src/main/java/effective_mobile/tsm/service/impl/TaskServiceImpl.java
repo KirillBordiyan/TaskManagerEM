@@ -4,6 +4,7 @@ import effective_mobile.tsm.exceptions.model.RequestedResourceNotFound;
 import effective_mobile.tsm.model.dto.input.TaskCreateInput;
 import effective_mobile.tsm.model.dto.response.CommentResponse;
 import effective_mobile.tsm.model.dto.response.TaskResponse;
+import effective_mobile.tsm.model.dto.update.ExecutorTaskUpdateInput;
 import effective_mobile.tsm.model.dto.update.TaskUpdateInput;
 import effective_mobile.tsm.model.entity.task.Task;
 import effective_mobile.tsm.model.entity.user.User;
@@ -88,6 +89,13 @@ public class TaskServiceImpl implements TaskService {
             task.setStatus(updatedData.getUpdatedStatus());
         }
         return taskMapper.mappingTaskEntityToResponse(taskRepository.save(task));
+    }
+
+    @Override
+    public TaskResponse updateTaskByExecutor(UUID taskId, ExecutorTaskUpdateInput updatedData) {
+        TaskUpdateInput input = new TaskUpdateInput();
+        input.setUpdatedStatus(updatedData.getUpdatedStatus());
+        return updateTask(taskId, input);
     }
 
     @Override

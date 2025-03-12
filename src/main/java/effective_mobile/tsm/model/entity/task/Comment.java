@@ -24,7 +24,7 @@ public class Comment implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "comment_id")
     private UUID commentId;
-    @Column(name = "comment_content")
+    @Column(name = "comment_content", nullable = false)
     private String commentContent;
     @Column(name = "created_at")
     private LocalDateTime createdAt;

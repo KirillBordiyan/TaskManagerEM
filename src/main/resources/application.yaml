@@ -24,4 +24,10 @@ security:
     access: 1 #часов
     refresh: 30 #дней
 
+springdoc:
+  override-with-generic-response: false
+  swagger-ui:
+    path: /swagger/tsm-ui
+  api-docs:
+    path: /swagger/tsm-api
 

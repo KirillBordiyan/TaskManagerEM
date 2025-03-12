@@ -1,5 +1,6 @@
 package effective_mobile.tsm.model.dto.update;
 
+import effective_mobile.tsm.model.entity.task.TaskStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,9 +12,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(name = "Comment update input", description = "To update comment data")
-public class CommentUpdateInput {
-    @Schema(description = "Updated data", example = "I can do it!")
-    @NotNull(message = "Updated comment content must be not null")
-    private String updatedCommentContent;
+public class ExecutorTaskUpdateInput {
+    @Schema(description = "New task status", allowableValues = {"TODO", "IN_PROGRESS", "DONE"})
+    @NotNull(message = "Updated status from executor must be not null")
+    private TaskStatus updatedStatus;
 }

@@ -24,11 +24,11 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private UUID userId;
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     private String username;
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -45,6 +45,6 @@ public class User implements Serializable {
     )
     private List<Task> executorOf;
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @Column(name = "role", nullable = false)
     private Role role;
 }

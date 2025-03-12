@@ -1,9 +1,8 @@
 package effective_mobile.tsm.security;
 
 import effective_mobile.tsm.config.JwtProperties;
-import effective_mobile.tsm.exceptions.model.AccessDeniedException;
+import effective_mobile.tsm.exceptions.model.CustomAccessDeniedException;
 import effective_mobile.tsm.model.entity.user.User;
-import effective_mobile.tsm.security.body.JwtDecode;
 import effective_mobile.tsm.security.body.JwtResponse;
 import effective_mobile.tsm.service.UserService;
 import io.jsonwebtoken.Claims;
@@ -72,7 +71,7 @@ public class JwtService {
     public JwtResponse refreshUserToken(String refresh){
         JwtResponse response = new JwtResponse();
         if(!isTokenValid(refresh)){
-            throw new AccessDeniedException();
+            throw new CustomAccessDeniedException();
         }
         String email = extractUserEmail(refresh);
         User user = userService.getEntityByEmail(email);

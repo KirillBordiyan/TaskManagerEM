@@ -3,15 +3,13 @@ package effective_mobile.tsm.security.auth;
 import effective_mobile.tsm.model.dto.response.UserResponse;
 import effective_mobile.tsm.model.entity.user.User;
 import effective_mobile.tsm.security.JwtService;
+import effective_mobile.tsm.security.body.JwtResponse;
 import effective_mobile.tsm.security.body.SignInRequest;
 import effective_mobile.tsm.security.body.SignUpRequest;
-import effective_mobile.tsm.security.body.JwtResponse;
 import effective_mobile.tsm.service.UserService;
-import effective_mobile.tsm.util.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,6 +38,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserResponse register(SignUpRequest login) {
         return userService.createUser(login);
+    }
+
+    @Override
+    public UserResponse makeAdmin(SignUpRequest adminData) {
+        return userService.makeAdmin(adminData);
     }
 
     @Override

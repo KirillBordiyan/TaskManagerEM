@@ -1,34 +1,102 @@
 package effective_mobile.tsm.controller;
 
+import effective_mobile.tsm.exceptions.ExceptionBody;
 import effective_mobile.tsm.model.dto.response.UserResponse;
 import effective_mobile.tsm.security.auth.AuthService;
 import effective_mobile.tsm.security.body.JwtResponse;
 import effective_mobile.tsm.security.body.SignInRequest;
 import effective_mobile.tsm.security.body.SignUpRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authorization Controller", description = "Auth users plus generate admin-user")
 public class AuthController {
     private final AuthService authService;
 
-    //register
+    @Operation(
+            summary = "SignUp",
+            description = "Registration point",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(schema = @Schema(implementation = UserResponse.class))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ExceptionBody.class))
+                    )
+            }
+    )
     @PostMapping("/signup")
-    public UserResponse signUp(@RequestBody SignUpRequest loginData) {
+    public UserResponse signUp(@Valid @RequestBody SignUpRequest loginData) {
         return authService.register(loginData);
     }
 
-    //login
+    @Operation(
+            summary = "SignIn",
+            description = "Login process point",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(schema = @Schema(implementation = JwtResponse.class))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ExceptionBody.class))),
+                    @ApiResponse(
+                            responseCode = "500",
+                            content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+            }
+    )
     @PostMapping("/signin")
-    public JwtResponse signIn(@RequestBody SignInRequest signInRequest) {
+    public JwtResponse signIn(@Valid @RequestBody SignInRequest signInRequest) {
         return authService.signIn(signInRequest);
     }
 
-    //TODO изменить логику refresh и signIn, ибо я не возвращаю данные для повторного запроса нужные в методе (пароль)
+    @Operation(
+            summary = "Refresh",
+            description = "Refresh users jwts",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(schema = @Schema(implementation = JwtResponse.class))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+            }
+    )
     @PostMapping("/refresh")
-    public JwtResponse refresh(@RequestHeader("Authorization") String refresh){
+    public JwtResponse refresh(@Valid @RequestHeader("Authorization") String refresh){
         return authService.refresh(refresh);
+    }
+
+    @Operation(
+            summary = "Admins",
+            description = "Creating admins by superadmin",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(schema = @Schema(implementation = UserResponse.class))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ExceptionBody.class))),
+                    @ApiResponse(
+                            responseCode = "500",
+                            content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+            }
+    )
+    @PostMapping("/admins")
+    public UserResponse makeAdmin(@Valid @RequestBody SignUpRequest adminData,
+                                  @AuthenticationPrincipal UserDetails details){
+        return authService.makeAdmin(adminData);
     }
 }

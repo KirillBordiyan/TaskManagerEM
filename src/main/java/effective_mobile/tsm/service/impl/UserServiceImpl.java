@@ -70,6 +70,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse createUser(SignUpRequest input) {
 
+        try{
+            if(userRepository.findUserByEmail(input.getEmail()).isPresent()
+            || userRepository.findUserByUsername(input.getUsername()).isPresent()){
+                throw new RuntimeException("User already exist (the same emails or username)");
+            }
+        } catch (RuntimeException e){
+            throw new IllegalStateException(e.getMessage());
+        }
+
         if (Objects.isNull(input.getEmail())) {
             throw new IllegalStateException("CREATE: user email must be not null");
         }
@@ -91,6 +100,44 @@ public class UserServiceImpl implements UserService {
         User saved = userRepository.save(user);
 
         return userMapper.mappingUserEntityToResponse(saved);
+    }
+
+
+    @Override
+    @Transactional
+    public UserResponse makeAdmin(SignUpRequest adminData) {
+
+        try{
+            if(userRepository.findUserByEmail(adminData.getEmail()).isPresent()
+                    || userRepository.findUserByUsername(adminData.getUsername()).isPresent()){
+                throw new RuntimeException("Admin already exist (the same emails or username)");
+            }
+        } catch (RuntimeException e){
+            throw new IllegalStateException(e.getMessage());
+        }
+
+        if (Objects.isNull(adminData.getEmail())) {
+            throw new IllegalStateException("CREATE ADMIN: user email must be not null");
+        }
+        if (Objects.isNull(adminData.getUsername())) {
+            throw new IllegalStateException("CREATE ADMIN: username must be not null");
+        }
+        if (Objects.isNull(adminData.getPassword())) {
+            throw new IllegalStateException("CREATE ADMIN: password must be not null");
+        }
+
+        User admin = new User();
+        admin.setEmail(adminData.getEmail());
+        admin.setUsername(adminData.getUsername());
+        admin.setPassword(encoder.encode(adminData.getPassword()));
+        admin.setExecutorOf(new ArrayList<>());
+        admin.setPrincipalOf(new ArrayList<>());
+        admin.setRole(Role.ADMIN);
+
+        User saved = userRepository.save(admin);
+
+        return userMapper.mappingUserEntityToResponse(saved);
+
     }
 
     @Override

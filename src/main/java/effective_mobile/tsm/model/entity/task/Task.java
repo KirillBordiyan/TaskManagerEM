@@ -26,15 +26,15 @@ public class Task implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "task_id")
     private UUID taskId;
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "description")
     private String description;
     @Enumerated(EnumType.STRING)
-    @Column(name ="status")
+    @Column(name ="status", nullable = false)
     private TaskStatus status;
     @Enumerated(EnumType.STRING)
-    @Column(name = "priority")
+    @Column(name = "priority", nullable = false)
     private TaskPriority priority;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -46,10 +46,10 @@ public class Task implements Serializable {
     )
     private List<Comment> comments;
     @ManyToOne
-    @JoinColumn(name = "principal_id")
+    @JoinColumn(name = "principal_id", nullable = false)
     private User principal;
     @ManyToOne
-    @JoinColumn(name = "executor_id")
+    @JoinColumn(name = "executor_id", nullable = false)
     private User executor;
 
     //TODO убрать дальше

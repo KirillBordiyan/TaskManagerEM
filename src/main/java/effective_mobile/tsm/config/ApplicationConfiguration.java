@@ -1,6 +1,13 @@
 package effective_mobile.tsm.config;
 
+import effective_mobile.tsm.model.entity.user.Role;
 import effective_mobile.tsm.security.JwtAuthenticationFilter;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,13 +32,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor(onConstructor_ = @__(@Lazy))
-public class SecurityConfiguration {
+public class ApplicationConfiguration {
 
     private final UserDetailsService detailsService;
     private final JwtAuthenticationFilter filter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
@@ -41,16 +48,18 @@ public class SecurityConfiguration {
                 )
                 .logout(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> {
+                    request.requestMatchers("/auth/admins").hasRole(Role.SUDO.toString());
                     request.requestMatchers("/auth/**").permitAll();
                     request.requestMatchers("/tasks/**").authenticated();
                     request.requestMatchers("/users/**").authenticated();
+                    request.requestMatchers("/swagger/**").permitAll();
                 })
-//                .exceptionHandling(handling ->{
-//                    handling.accessDeniedHandler(((request, response, accessDeniedException) -> {
-//                        response.setStatus(HttpStatus.FORBIDDEN.value());
-//                        response.getWriter().write("FORBIDDEN -> unauthorize");
-//                    }));
-//                })
+                .exceptionHandling(handling -> {
+                    handling.accessDeniedHandler(((request, response, accessDeniedException) -> {
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        response.getWriter().write("Unauthorized");
+                    }));
+                })
                 .anonymous(AbstractHttpConfigurer::disable)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -58,7 +67,7 @@ public class SecurityConfiguration {
 
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -74,5 +83,24 @@ public class SecurityConfiguration {
         provider.setUserDetailsService(detailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
+    }
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                .components(
+                        new Components().addSecuritySchemes(
+                                "bearerAuth",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT"))
+                )
+                .info(new Info()
+                        .title("Task Management System")
+                        .description("Task from EM")
+                        .version("1.0")
+                );
     }
 }

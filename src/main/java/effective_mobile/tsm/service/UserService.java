@@ -17,6 +17,7 @@ public interface UserService {
     UserResponse getUserByUsername(String username);
     UserResponse getUserById(String userId);
     UserResponse createUser(SignUpRequest input);
+    UserResponse makeAdmin(SignUpRequest adminData);
     UserResponse updateUserData(UUID userId, UserUpdateInput updatedData);
     void deleteUser(UUID userId);
     boolean isPrincipal(UUID userId, UUID taskId);
