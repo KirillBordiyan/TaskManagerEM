@@ -9,7 +9,8 @@ maven 3.8.5
 Запуск локаный (без docker compose)
     1) поднять бд в докере:
         - docker run --name tasklistdb -p 5522:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=tasklist_db -d postgres
-
+        cli:
+        psql -U postgres tasklist_db
     2) далее запускать приложение через java -jar или в ide
         ссылка на swagger ui (как в .yaml):
         - localhost:8080/swagger/tsm-ui
@@ -47,6 +48,10 @@ sudo может создавать админов или закреплять з
 В эндпоинт refresh потребуется добавить refresh-токен в поле ввода и в автоматическую отправку (туда access или refresh)
     связано с тем, что необходимо его получение, но swagger ui не позволяет разделить
     (через постман достаточно добавить header с refresh-токеном)
+
+
+Переменные среды вынесены в отдельный файл .env
+содержит в себе параметры для чистого приложения(БД, JWT, sudo данные) и запуска docker-compose
 
 
 
