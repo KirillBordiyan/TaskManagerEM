@@ -10,6 +10,12 @@ import java.util.Map;
 @AllArgsConstructor
 @Schema(name = "Exception body")
 public class ExceptionBody {
+    @Override
+    public String toString() {
+        return "message='" + message + '\'' +
+                ", errors=" + errors;
+    }
+
     @Schema(description = "Message", example = "Validation exception or Internal server error")
     private String message;
     @Schema(description = "Additional props")

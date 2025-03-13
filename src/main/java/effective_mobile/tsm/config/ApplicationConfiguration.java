@@ -1,6 +1,6 @@
 package effective_mobile.tsm.config;
 
-import effective_mobile.tsm.model.entity.user.Role;
+import effective_mobile.tsm.exceptions.ExceptionBody;
 import effective_mobile.tsm.security.JwtAuthenticationFilter;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -47,7 +47,6 @@ public class ApplicationConfiguration {
                 )
                 .logout(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/auth/admins").hasRole(Role.SUDO.toString());
                     request.requestMatchers("/auth/**").permitAll();
                     request.requestMatchers("/tasks/**").authenticated();
                     request.requestMatchers("/users/**").authenticated();
@@ -56,7 +55,7 @@ public class ApplicationConfiguration {
                 .exceptionHandling(handling -> {
                     handling.accessDeniedHandler(((request, response, accessDeniedException) -> {
                         response.setStatus(HttpStatus.FORBIDDEN.value());
-                        response.getWriter().write("Unauthorized");
+                        response.getWriter().write(new ExceptionBody("Unauthorized").toString());
                     }));
                 })
                 .anonymous(AbstractHttpConfigurer::disable)

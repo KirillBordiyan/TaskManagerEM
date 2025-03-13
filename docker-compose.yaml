@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    container_name: tsm-main-service-api
+    ports:
+      - "8085:8080"
+    depends_on:
+      - postgres-db
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${DC_DB_HOST}:5501/${DC_POSTGRES_DATABASE}?currentSchema=${DC_POSTGRES_SCHEMA}
+      SPRING_DATASOURCE_USERNAME: ${DC_POSTGRES_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DC_POSTGRES_PASSWORD}
+
+
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: tsm_database
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DC_POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${DC_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DC_POSTGRES_DATABASE}
+    ports:
+      - "5501:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql

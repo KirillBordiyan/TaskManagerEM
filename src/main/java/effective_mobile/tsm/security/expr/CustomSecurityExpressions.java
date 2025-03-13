@@ -4,7 +4,6 @@ import effective_mobile.tsm.model.entity.user.Role;
 import effective_mobile.tsm.model.entity.user.User;
 import effective_mobile.tsm.security.body.JwtEntity;
 import effective_mobile.tsm.service.CommentService;
-import effective_mobile.tsm.service.TaskService;
 import effective_mobile.tsm.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -18,7 +17,6 @@ import java.util.UUID;
 public class CustomSecurityExpressions {
 
     private final UserService userService;
-    private final TaskService taskService;
     private final CommentService commentService;
 
     public boolean isTaskOwner(UUID taskId) {
@@ -39,13 +37,13 @@ public class CustomSecurityExpressions {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth.getAuthorities().stream()
                 .anyMatch(ga ->
-                        ga.getAuthority().equals(Role.ADMIN.toString()) ||
-                                ga.getAuthority().equals(Role.SUDO.toString()));
+                        ga.getAuthority().contains(Role.ADMIN.toString()) ||
+                                ga.getAuthority().contains(Role.SUDO.toString()));
     }
 
     public boolean isSudo(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(Role.SUDO.toString()));
+        return auth.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().contains(Role.SUDO.toString()));
     }
 
     public boolean isExecutor(UUID taskId) {
@@ -57,13 +55,21 @@ public class CustomSecurityExpressions {
 
     public boolean isOwnerOrSenderByUsername(String username) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName().equals(username);
+        JwtEntity je = (JwtEntity) auth.getPrincipal();
+        User user = userService.getEntityByUsername(je.getUsername());
+        if (user.getRole().equals(Role.SUDO)) {
+            return isSudo();
+        }
+        return user.getUsername().equals(username);
     }
 
     public boolean isOwnerOrSenderById(UUID userId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         JwtEntity je = (JwtEntity) auth.getPrincipal();
         User entityByEmail = userService.getEntityByEmail(je.getEmail());
+        if (entityByEmail.getRole().equals(Role.SUDO)) {
+            return isSudo();
+        }
         return userId.equals(entityByEmail.getUserId());
     }
 

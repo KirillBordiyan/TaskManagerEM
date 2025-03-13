@@ -70,6 +70,9 @@ public class JwtService {
 
     public JwtResponse refreshUserToken(String refresh){
         JwtResponse response = new JwtResponse();
+        if (refresh != null && refresh.startsWith("Bearer ")) {
+            refresh = refresh.substring(7);
+        }
         if(!isTokenValid(refresh)){
             throw new CustomAccessDeniedException();
         }

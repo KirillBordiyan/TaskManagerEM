@@ -1,28 +1,35 @@
 server:
   port: 8080
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: task-management-system
 
   datasource:
-    url: jdbc:postgresql://localhost:5522/tasklist_db?currentSchema=tasklist
-    username: postgres
-    password: pass
+    url: jdbc:postgresql://${DB_HOST}:5522/${POSTGRES_DATABASE}?currentSchema=${POSTGRES_SCHEMA}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     # по-хорошему, вместо пересоздания БД должны быть сиды для инициализации
     database: POSTGRESQL
 
+  sudo:
+    sudoUsername: ${SUDO_USERNAME}
+    sudoEmail: ${SUDO_EMAIL}
+    sudoPassword: ${SUDO_PASSWORD}
+
 security:
   jwt:
-    secret: PEOPWETPOEKLSDVMSKPEOPWETPOEKLSDVMSKPEOPWETPOEKLSDVMSKOEKLSDVMSKPEOPWETPOEKLSDVMSKOEKLSDVMSKPEOPWETPOEKLSDVMSKOEKLSDVMSKPEOPWETPOEKLSDVMSK
-    access: 1 #часов
-    refresh: 30 #дней
+    secret: ${JWT_SECRET}
+    access: ${JWT_ACCESS} #часов
+    refresh: ${JWT_REFRESH} #дней
 
 springdoc:
   override-with-generic-response: false
@@ -30,4 +37,5 @@ springdoc:
     path: /swagger/tsm-ui
   api-docs:
     path: /swagger/tsm-api
+
 

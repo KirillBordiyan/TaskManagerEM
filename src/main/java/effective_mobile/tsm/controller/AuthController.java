@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +36,6 @@ public class AuthController {
                     )
             }
     )
-    @PermitAll
     @PostMapping("/signup")
     public UserResponse signUp(@Valid @RequestBody SignUpRequest loginData) {
         return authService.register(loginData);
@@ -58,7 +56,6 @@ public class AuthController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PermitAll
     @PostMapping("/signin")
     public JwtResponse signIn(@Valid @RequestBody SignInRequest signInRequest) {
         return authService.signIn(signInRequest);
@@ -76,7 +73,6 @@ public class AuthController {
                             content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
             }
     )
-    @PermitAll
     @PostMapping("/refresh")
     public JwtResponse refresh(@Valid @RequestHeader("Authorization") String refresh){
         return authService.refresh(refresh);
