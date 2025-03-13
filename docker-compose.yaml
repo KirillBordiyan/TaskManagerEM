@@ -11,8 +11,8 @@ services:
     env_file:
       - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${DC_DB_HOST}:5501/${DC_POSTGRES_DATABASE}?currentSchema=${DC_POSTGRES_SCHEMA}
-      SPRING_DATASOURCE_USERNAME: ${DC_POSTGRES_USERNAME}
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://${DC_DB_HOST}:5432/${DC_POSTGRES_DATABASE}?currentSchema=${DC_POSTGRES_SCHEMA}'
+      SPRING_DATASOURCE_USER: ${DC_POSTGRES_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DC_POSTGRES_PASSWORD}
 
 
@@ -26,6 +26,6 @@ services:
       POSTGRES_PASSWORD: ${DC_POSTGRES_PASSWORD}
       POSTGRES_DB: ${DC_POSTGRES_DATABASE}
     ports:
-      - "5501:5432"
+      - "5432:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
